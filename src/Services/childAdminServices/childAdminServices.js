@@ -24,6 +24,8 @@ export const getChildAdmins = async () => {
       headers: { Authorization: `Bearer ${token}` },
     });
 
+    console.log(data)
+
     return data?.admins || [];
   } catch (err) {
     console.error("Failed to fetch child admins:", err);

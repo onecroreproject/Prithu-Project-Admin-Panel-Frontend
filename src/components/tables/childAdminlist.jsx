@@ -1,4 +1,5 @@
 export default function ChildAdminList({ admins, onSelect }) {
+  console.log(admins)
   return (
     <ul className="space-y-3">
       {admins.map((admin) => (

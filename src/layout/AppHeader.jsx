@@ -61,10 +61,10 @@ const AppHeader = () => {
             )}
           </button>
 
-          <Link to="/" className="flex items-center gap-2 lg:gap-3">
+          {/* <Link to="/" className="flex items-center gap-2 lg:gap-3">
             <img src={PrithuLogo} alt="Logo" width={40} height={40} />
             {(isHovered || isMobileOpen) && <p className="text-xl font-bold">Prithu DashBoard</p>}
-          </Link>
+          </Link> */}
         </div>
 
         {/* Search bar */}

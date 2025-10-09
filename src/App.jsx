@@ -12,7 +12,7 @@ import AppLayout from "./layout/AppLayout";
 import Home from "./pages/Dashboard/Home";
 import UploadPage from "./pages/uploadPage";
 import ReferralTreePage from "./pages/userTree";
-import UserAnalytics from "./pages/UserProfile/userAnaliticalPage";
+import UserAnalytics from "./pages/UserProfile/UserAnalitical/userAnaliticalPage";
 import UserTableAnalytical from "./components/tables/UserTabel/userAnaliticalTable";
 import UserProfiles from "./pages/UserProfile/UserProfiles";
 import Videos from "./pages/UiElements/Videos";
@@ -37,6 +37,7 @@ import ChildAdminPermissionPage from "./pages/ChildAdminRegister/childAdminPermi
 
 // Error Boundary
 import { ErrorBoundary } from "react-error-boundary";
+import TrendingCreatorsPage from "./pages/trendingCreator";
 
 function RouteErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -90,6 +91,7 @@ function AnimatedRoutes() {
           <Route path="/subscription/page" element={<SubscriptionPage />} />
           <Route path="/user/profile/dashboard" element={<UserDashboard />} />
           <Route path="/childadmin/permission" element={<ChildAdminPermissionPage />} />
+          <Route path="/trending/creator" element={<TrendingCreatorsPage/>}/>
         </Route>
 
         {/* Fallback Route */}
