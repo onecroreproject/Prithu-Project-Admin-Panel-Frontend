@@ -4,28 +4,7 @@ import {
   GroupIcon,
   UserIcon,
 } from "../../../icons";
-import Badge from "../../../components/ui/badge/Badge";
-
-const metricsData = [
-  {
-    title: "Total Users Registered",
-    value: "1,245",
-    icon: <GroupIcon className="text-gray-800 size-6 dark:text-white/90" />,
-    badge: { value: "12.4%", color: "success", icon: <ArrowUpIcon /> },
-  },
-  {
-    title: "Today Users Registered",
-    value: "123",
-    icon: <UserIcon className="text-gray-800 size-6 dark:text-white/90" />,
-    badge: { value: "5.6%", color: "success", icon: <ArrowUpIcon /> },
-  },
-  {
-    title: "Today User Subscriptions",
-    value: "78",
-    icon: <UserIcon className="text-gray-800 size-6 dark:text-white/90" />,
-    badge: { value: "2.1%", color: "error", icon: <ArrowDownIcon /> },
-  },
-];
+import Badge from "../../../components/ui/badge/Badge"
 
 export default function UserMetrics() {
   return (

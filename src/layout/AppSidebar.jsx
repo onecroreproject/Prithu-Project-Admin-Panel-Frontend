@@ -1,4 +1,3 @@
-// src/components/Sidebar/AppSidebar.jsx
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,9 +21,8 @@ const navItems = [
     name: "Admin",
     permission: "canManageChildAdmins",
     subItems: [
-      { name: "Admin Profile", path: "/", permission: null },
+      { name: "Admin Profile", path: "/admin/profile/page", permission: null },
       { name: "ChildAdmin Creation", path: "/child/admin/page", permission: "canManageChildAdminsCreation" },
-      { name: "ChildAdmin Permissions", path: "/childadmin/permission", permission: "canManageChildAdminsPermissions" },
     ],
   },
   {
@@ -37,10 +35,19 @@ const navItems = [
       { name: "User Feed Reports", path: "/user-reportinfo", permission: "canManageUsersFeedReports" },
     ],
   },
-  { icon: <ListIcon />, name: "Creator Profile", permission: "canManageCreators", subItems: [{ name: "Creator Details", path: "/creator/trending/table", permission: "canManageCreators" },
-    { name: "Trending Creator", path: "/trending/creator", permission: "canTrendingCreators" }
-  ] },
-  { icon: <TableIcon />, name: "Feeds Info", permission: "canManageFeeds", subItems: [{ name: "Feed Upload", path: "/admin/upload/page", permission: "canManageFeeds" }] },
+  {
+    icon: <ListIcon />,
+    name: "Creator Profile",
+    permission: "canManageCreators",
+    subItems: [
+      { name: "Creator Details", path: "/creator/trending/table", permission: "canManageCreators" },
+      { name: "Trending Creator", path: "/trending/creator", permission: "canTrendingCreators" }
+    ]
+  },
+  { icon: <TableIcon />, name: "Feeds Info", permission: "canManageFeeds", subItems: [
+      { name: "Feed Upload", path: "/admin/upload/page", permission: "canManageFeeds" }
+    ] 
+  },
   {
     icon: <TableIcon />,
     name: "Subscriptions Info",
@@ -49,7 +56,11 @@ const navItems = [
       { name: "Manage Subscriptions", path: "/subscription/page", permission: "canManageSettingsSubscriptions" },
     ],
   },
-  { icon: <PageIcon />, name: "Pages", permission: null, subItems: [{ name: "Blank Page", path: "/blank", permission: null }, { name: "404 Error", path: "/error-404", permission: null }] },
+  { icon: <PageIcon />, name: "Pages", permission: null, subItems: [
+      { name: "Blank Page", path: "/blank", permission: null }, 
+      { name: "404 Error", path: "/error-404", permission: null }
+    ] 
+  },
 ];
 
 const AppSidebar = ({ user }) => {
@@ -62,7 +73,7 @@ const AppSidebar = ({ user }) => {
 
   const isActive = useCallback((path) => location.pathname === path, [location.pathname]);
 
-  // 🔹 Filter menu based on permissions
+  // Filter menu based on permissions
   const filterMenu = (items) => {
     if (!user) return [];
     if (user.role === "Admin") return items;
@@ -79,14 +90,14 @@ const AppSidebar = ({ user }) => {
 
   const filteredNavItems = filterMenu(navItems);
 
-  // 🔹 Handle submenu toggle
+  // Handle submenu toggle
   const handleSubmenuToggle = (index, menuType) => {
     setOpenSubmenu((prev) =>
       prev?.type === menuType && prev.index === index ? null : { type: menuType, index }
     );
   };
 
-  // 🔹 Update submenu height dynamically
+  // Update submenu height dynamically
   useEffect(() => {
     if (openSubmenu !== null) {
       const key = `${openSubmenu.type}-${openSubmenu.index}`;
@@ -99,25 +110,31 @@ const AppSidebar = ({ user }) => {
     }
   }, [openSubmenu]);
 
-  // 🔹 Sidebar animation
+  // Sidebar width animation
   const sidebarVariants = {
-    collapsed: { width: "85px", transition: { duration: 0.4, ease: "easeInOut" } },
-    expanded: { width: "280px", transition: { duration: 0.4, ease: "easeInOut" } },
+    collapsed: {
+      width: "85px",
+      transition: { type: "spring", stiffness: 180, damping: 26, duration: 0.5, ease: "easeInOut" },
+    },
+    expanded: {
+      width: "280px",
+      transition: { type: "spring", stiffness: 180, damping: 26, duration: 0.5, ease: "easeInOut" }
+    },
   };
 
-  // 🔹 Text fade/slide animation
+  // Fade/slide animation for text (logo, labels)
   const textVariants = {
-    hidden: { opacity: 0, x: -8, transition: { duration: 0.2 } },
-    visible: { opacity: 1, x: 0, transition: { duration: 0.3 } },
+    hidden: { opacity: 0, x: -12, transition: { duration: 0.2 } },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.4 } },
   };
 
-  // 🔹 Close submenus when sidebar collapses
+  // Close submenus when sidebar collapses
   const handleMouseLeave = () => {
     setIsHovered(false);
-    setOpenSubmenu(null); // auto close
+    setOpenSubmenu(null);
   };
 
-  // 🔹 Render Menu Items
+  // Render Menu Items
   const renderMenuItems = (items, menuType) => (
     <ul className="flex flex-col gap-4">
       {items.map((nav, index) => {
@@ -130,9 +147,10 @@ const AppSidebar = ({ user }) => {
             {nav.subItems?.length ? (
               <button
                 onClick={() => handleSubmenuToggle(index, menuType)}
-                className={`menu-item group flex items-center gap-3 cursor-pointer w-full ${
+                className={`menu-item group flex items-center gap-3 cursor-pointer w-full transition-all duration-200 ${
                   isSubmenuOpen ? "text-brand-500" : ""
                 }`}
+                tabIndex={0}
               >
                 <span
                   className={`menu-item-icon-size flex-shrink-0 transition-colors duration-300 ${
@@ -141,7 +159,6 @@ const AppSidebar = ({ user }) => {
                 >
                   {nav.icon}
                 </span>
-
                 <AnimatePresence>
                   {(isHovered || isMobileOpen) && (
                     <motion.span
@@ -156,7 +173,6 @@ const AppSidebar = ({ user }) => {
                     </motion.span>
                   )}
                 </AnimatePresence>
-
                 {(isHovered || isMobileOpen) && (
                   <motion.div
                     animate={{ rotate: isSubmenuOpen ? 180 : 0 }}
@@ -169,7 +185,7 @@ const AppSidebar = ({ user }) => {
             ) : (
               <Link
                 to={nav.path}
-                className={`menu-item group flex items-center gap-3 ${
+                className={`menu-item group flex items-center gap-3 transition-all duration-200 ${
                   isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
                 }`}
               >
@@ -197,41 +213,45 @@ const AppSidebar = ({ user }) => {
                 </AnimatePresence>
               </Link>
             )}
-
             {/* Submenu Animation */}
-            <motion.div
-              ref={(el) => {
-                subMenuRefs.current[key] = el;
-              }}
-              className="overflow-hidden"
-              animate={{
-                height: isSubmenuOpen
-                  ? subMenuRefs.current[key]?.scrollHeight || "auto"
-                  : 0,
-                opacity: isSubmenuOpen ? 1 : 0,
-              }}
-              transition={{
-                duration: 0.45,
-                ease: [0.25, 0.1, 0.25, 1],
-              }}
-            >
-              <ul className="mt-1 space-y-1 ml-9">
-                {nav.subItems?.map((subItem) => (
-                  <li key={subItem.name}>
-                    <Link
-                      to={subItem.path}
-                      className={`menu-dropdown-item ${
-                        isActive(subItem.path)
-                          ? "menu-dropdown-item-active"
-                          : "menu-dropdown-item-inactive"
-                      }`}
-                    >
-                      {subItem.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
+            <AnimatePresence>
+              {isSubmenuOpen && (
+                <motion.div
+                  key={"submenu"}
+                  ref={(el) => {
+                    subMenuRefs.current[key] = el;
+                  }}
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{
+                    height: subMenuRefs.current[key]?.scrollHeight || "auto",
+                    opacity: 1,
+                  }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{
+                    height: { duration: 0.45, ease: [0.25, 0.1, 0.25, 1] },
+                    opacity: { duration: 0.2 },
+                  }}
+                  className="overflow-hidden"
+                >
+                  <ul className="mt-1 space-y-1 ml-9">
+                    {nav.subItems?.map((subItem) => (
+                      <li key={subItem.name}>
+                        <Link
+                          to={subItem.path}
+                          className={`menu-dropdown-item ${
+                            isActive(subItem.path)
+                              ? "menu-dropdown-item-active"
+                              : "menu-dropdown-item-inactive"
+                          }`}
+                        >
+                          {subItem.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </li>
         );
       })}
@@ -252,8 +272,11 @@ const AppSidebar = ({ user }) => {
       animate={isHovered ? "expanded" : "collapsed"}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
+      style={{
+        boxShadow: "0 1px 10px rgba(0,0,0,.07)"
+      }}
     >
-      {/* Logo Section */}
+      {/* Logo + Title section */}
       <div
         className={`py-6 flex items-center transition-all duration-500 ${
           isHovered || isMobileOpen ? "justify-start" : "justify-center"
@@ -293,8 +316,6 @@ const AppSidebar = ({ user }) => {
             </div>
           </div>
         </nav>
-
-        {/* Sidebar Widget */}
         <AnimatePresence>
           {(isHovered || isMobileOpen) && <SidebarWidget />}
         </AnimatePresence>

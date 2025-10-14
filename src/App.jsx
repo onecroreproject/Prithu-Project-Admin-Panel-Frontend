@@ -38,6 +38,9 @@ import ChildAdminPermissionPage from "./pages/ChildAdminRegister/childAdminPermi
 // Error Boundary
 import { ErrorBoundary } from "react-error-boundary";
 import TrendingCreatorsPage from "./pages/trendingCreator";
+import AdminProfilePage from "./pages/adminProfilePage";
+import ChildAdminProfile from "./pages/childAdminProfilePage";
+import IndividualUserProfilePage from "./pages/UserProfile/UserAnalitical/individualUserProfilePage";
 
 function RouteErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -90,8 +93,11 @@ function AnimatedRoutes() {
           <Route path="/child/admin/page" element={<ChildAdminPage />} />
           <Route path="/subscription/page" element={<SubscriptionPage />} />
           <Route path="/user/profile/dashboard" element={<UserDashboard />} />
-          <Route path="/childadmin/permission" element={<ChildAdminPermissionPage />} />
+          <Route path="/childadmin/permission/:id" element={<ChildAdminPermissionPage />} />
           <Route path="/trending/creator" element={<TrendingCreatorsPage/>}/>
+          <Route path="/admin/profile/page" element={<AdminProfilePage/>}/>
+          <Route path="/child/admin/profile/:id" element={<ChildAdminProfile/>}/>
+          <Route path="/individual/user/profile/:id" element={<IndividualUserProfilePage/>}/>
         </Route>
 
         {/* Fallback Route */}

@@ -91,3 +91,27 @@ export const updateChildAdminPermissions = async (childAdminId, body) => {
     throw err;
   }
 };
+
+
+
+
+export const fetchChildAdminProfile = async (id) => {
+  if (!id) throw new Error("Admin ID is required");
+  const { data } = await api.get(`${API_ENDPOINTS.GET_CHILD_ADMIN_DETAIL}/${id}`, {
+    withCredentials: true,
+  });
+  return data.data;
+};
+
+
+// Block child admin
+export const blockChildAdmin = async (id) => {
+  const { data } = await api.patch(`${API_ENDPOINTS.BLOCK_CHILD_ADMIN}/${id}`);
+  return data;
+};
+
+// Delete child admin
+export const deleteChildAdmin = async (id) => {
+  const { data } = await api.delete(`${API_ENDPOINTS.DETETE_CHILD_ADMIN}/${id}`);
+  return data;
+};

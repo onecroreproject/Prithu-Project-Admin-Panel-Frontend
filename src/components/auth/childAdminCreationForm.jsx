@@ -6,7 +6,11 @@ import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 import { useAdminAuth } from "../../context/adminAuthContext";
 
-export default function ChildAdminForm({ onSuccess }) { // receive onSuccess
+// Custom animation classes (add to your CSS/tailwind.config.js if needed)
+// .animate-fadeInLeft { animation: fadeInLeft 0.6s cubic-bezier(.4,0,.2,1) both; }
+// @keyframes fadeInLeft { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: none; } }
+
+export default function ChildAdminForm({ onSuccess }) {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [username, setUsername] = useState("");
@@ -38,8 +42,6 @@ export default function ChildAdminForm({ onSuccess }) { // receive onSuccess
 
       if (res?.admin) {
         const { email, childAdminId, username, adminType } = res.admin;
-
-        // Call onSuccess to update parent state instantly
         if (onSuccess) onSuccess({ email, childAdminId, username, adminType });
 
         setPopup({
@@ -57,7 +59,6 @@ export default function ChildAdminForm({ onSuccess }) { // receive onSuccess
           ),
         });
 
-        // Clear form
         setUsername("");
         setEmail("");
         setPassword("");
@@ -77,11 +78,11 @@ export default function ChildAdminForm({ onSuccess }) { // receive onSuccess
   };
 
   return (
-    <div className="flex flex-col flex-1 w-full overflow-y-auto lg:w-full no-scrollbar relative">
+    <div className="flex flex-col flex-1 w-full overflow-y-auto lg:w-full no-scrollbar relative bg-gradient-to-br from-blue-50 to-brand-50 min-h-screen">
       {/* Response Modal */}
       {popup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-96 max-w-sm animate-fadeIn">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50 animate-fadeIn">
+          <div className="bg-white rounded-xl shadow-2xl p-6 w-96 max-w-sm animate-fadeInLeft border-t-4 border-b-4 border-brand-400 transition-all duration-400">
             <h2 className={`text-lg font-semibold mb-2 ${popup.type === "success" ? "text-green-600" : "text-red-600"}`}>
               {popup.type === "success" ? "Success" : "Error"}
             </h2>
@@ -90,7 +91,7 @@ export default function ChildAdminForm({ onSuccess }) { // receive onSuccess
             </div>
             <button
               onClick={() => setPopup(null)}
-              className="mt-4 px-4 py-2 bg-brand-500 text-white rounded hover:bg-brand-600"
+              className="mt-4 px-4 py-2 bg-brand-500 transition-colors duration-200 text-white rounded shadow-lg hover:bg-brand-600 hover:shadow-xl"
             >
               Close
             </button>
@@ -99,22 +100,25 @@ export default function ChildAdminForm({ onSuccess }) { // receive onSuccess
       )}
 
       <div className="w-full max-w-md mx-auto mb-5 sm:pt-10">
-        <Link to="/" className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700">
+        <Link to="/" className="inline-flex items-center text-sm text-gray-500 hover:text-brand-600 transition-colors duration-200">
           <ChevronLeftIcon className="size-5" />
-          Back to dashboard
+          <span className="ml-1">Back to dashboard</span>
         </Link>
       </div>
 
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
-        <div className="mb-5 sm:mb-8">
-          <h1 className="mb-2 font-semibold text-gray-800 text-title-sm sm:text-title-md">
+        <div className="mb-5 sm:mb-8 animate-fadeInLeft">
+          <h1 className="mb-2 font-bold text-gray-800 text-title-sm sm:text-title-md">
             Create Child Admin
           </h1>
           <p className="text-sm text-gray-500">Fill in the details to create a new child admin account.</p>
           {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
         </div>
-
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-5 bg-white rounded-2xl shadow-xl px-7 py-8 border border-transparent hover:border-brand-400/70 transition-all animate-fadeInLeft"
+          style={{ boxShadow: ' 0 2px 12px 0 rgba(60, 82, 230, 0.08), 0 2px 4px 0 rgba(0,0,0,0.05)' }}
+        >
           <div>
             <Label>User Name<span className="text-error-500">*</span></Label>
             <Input
@@ -123,6 +127,7 @@ export default function ChildAdminForm({ onSuccess }) { // receive onSuccess
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
+              className="transition-shadow duration-300 focus:shadow-brand-200"
             />
           </div>
 
@@ -134,6 +139,7 @@ export default function ChildAdminForm({ onSuccess }) { // receive onSuccess
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className="transition-shadow duration-300 focus:shadow-brand-200"
             />
           </div>
 
@@ -146,10 +152,11 @@ export default function ChildAdminForm({ onSuccess }) { // receive onSuccess
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="transition-shadow duration-300 focus:shadow-brand-200 pr-10"
               />
               <span
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2 transition-colors duration-200"
               >
                 {showPassword ? <EyeIcon className="fill-gray-500 size-5" /> : <EyeCloseIcon className="fill-gray-500 size-5" />}
               </span>
@@ -159,10 +166,15 @@ export default function ChildAdminForm({ onSuccess }) { // receive onSuccess
           <div>
             <button
               type="submit"
-              className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600"
+              className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition-all rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-brand-300 focus:ring-offset-2 active:scale-95"
               disabled={loading}
             >
-              {loading ? "Creating..." : "Create Child Admin"}
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" /></svg>
+                  Creating...
+                </span>
+              ) : "Create Child Admin"}
             </button>
           </div>
         </form>

@@ -20,11 +20,11 @@ export default function SignInForm() {
 console.log(admin)
   
   
-   useEffect(() => {
-    if (admin?.token && (role === "Admin" || role === "Child_Admin")) {
-      navigate("/"); // Dashboard
-    }
-  }, [admin, role, navigate]);
+  //  useEffect(() => {
+  //   if (admin?.token && (role === "Admin" || role === "Child_Admin")) {
+  //     navigate("/"); // Dashboard
+  //   }
+  // }, [admin, role, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

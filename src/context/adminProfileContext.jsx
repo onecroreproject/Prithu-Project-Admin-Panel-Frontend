@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import api from "../Utils/axiosApi";
+import { useAdminAuth } from "../context/adminAuthContext";
 
 // Create Context
 const AdminProfileContext = createContext();
@@ -13,7 +14,12 @@ export const AdminProfileProvider = ({ children}) => {
   const [loading, setLoading] = useState(false);
   const [updating, setUpdating] = useState(false);
 const tokenData = localStorage.getItem("admin");
+const role = localStorage.getItem("role");
 const { token } = tokenData ? JSON.parse(tokenData) : { token: null };
+
+
+ console.log(role)
+
 
 
   // ✅ Fetch profile
@@ -32,21 +38,33 @@ const { token } = tokenData ? JSON.parse(tokenData) : { token: null };
     }
   };
 
-  // ✅ Update profile
 // ✅ Update profile
-const updateProfile = async (formData, avatar) => {
+const updateProfile = async (formData,avatar) => {
   setUpdating(true);
+
   try {
+console.log(avatar)
     const fd = new FormData();
     Object.keys(formData).forEach((key) => {
       if (formData[key] !== undefined && formData[key] !== "")
         fd.append(key, formData[key]);
     });
 
-    // must match router.put('/admin/profile/detail/update', adminUpload.single("file"))
+
     if (avatar) fd.append("file", avatar);
 
-    await api.put(`/admin/profile/detail/update`, fd, {
+    // 🔹 Determine correct API endpoint based on role
+    let endpoint = "";
+    if (role === "Admin") {
+      endpoint = "/admin/profile/detail/update";
+    } else if (role === "Child_Admin") {
+      endpoint = "/child/admin/profile/detail/update";
+    } else {
+      throw new Error("Invalid role: cannot update profile");
+    }
+
+    // 🔹 Send request
+    await api.put(endpoint, fd, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",

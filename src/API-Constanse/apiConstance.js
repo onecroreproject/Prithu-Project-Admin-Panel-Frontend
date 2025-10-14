@@ -38,9 +38,13 @@ export const API_ENDPOINTS = {
   GET_CHILD_ADMIN_LIST:"/admin/childadmin/list",
   GET_CHILD_ADMIN_PERMISSONS:"/admin/childadmin/permissions",
   UPDATE_CHILD_ADMIN_PERMISSIONS:"/admin/childadmin/permissions",
+  GET_CHILD_ADMIN_DETAIL:"/child/admin",
+  DETETE_CHILD_ADMIN:"/delete/child/admin",
+  BLOCK_CHILD_ADMIN:"/block/child/admin",
 
 
   ADMIN_GET_ALL_CREATOR:"/admin/getall/creators",
+  ADMIN_GET_TRENDING_CREATOR:"/admin/get/trending/creator",
 
 
   ADMIN_GET_CATEGORY:"/admin/get/feed/category",

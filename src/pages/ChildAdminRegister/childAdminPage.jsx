@@ -1,20 +1,24 @@
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ChildAdminForm from "../../components/auth/childAdminCreationForm";
 import { getChildAdmins } from "../../Services/childAdminServices/childAdminServices";
 
+const fadeLeft = {
+  hidden: { opacity: 0, x: -32 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.5, type: "spring", bounce: 0.13 } }
+};
+
 export default function AdminChildPage() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
-  // Fetch child admins using React Query
-  const { data: childAdmins = [], refetch, isLoading, isError } = useQuery({
+  const { data: childAdmins = [], isLoading, isError } = useQuery({
     queryKey: ["childAdmins"],
     queryFn: getChildAdmins,
   });
-
-  // This function will be called from ChildAdminForm after successful creation
+console.log(childAdmins)
   const handleAddChildAdmin = (newAdmin) => {
-    // Optimistically update the list in React Query cache
     queryClient.setQueryData(["childAdmins"], (old = []) => [newAdmin, ...old]);
   };
 
@@ -22,49 +26,76 @@ export default function AdminChildPage() {
   if (isError) return <p className="p-6 text-red-500">Failed to load child admins.</p>;
 
   return (
-    <div className="flex w-full h-screen bg-gray-50">
+    <motion.div
+      className="flex w-full min-h-screen bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50"
+      variants={fadeLeft}
+      initial="hidden"
+      animate="visible"
+    >
       {/* Left: Child Admin Form */}
-      <div className="flex-1 border-r border-gray-200 p-6 overflow-y-auto">
+      <motion.div
+        variants={fadeLeft}
+        initial="hidden"
+        animate="visible"
+        transition={{ delay: 0.07 }}
+        className="flex-1 border-r border-violet-200 p-6 bg-white bg-opacity-95 rounded-r-3xl shadow-2xl flex flex-col justify-center"
+      >
         <ChildAdminForm onSuccess={handleAddChildAdmin} />
-      </div>
+      </motion.div>
 
       {/* Right: Child Admin List */}
-      <div className="flex-1 p-6 flex flex-col">
-        <h2 className="text-xl font-semibold mb-4">Child Admin List</h2>
-
-        {/* Scrollable container */}
+      <motion.div
+        variants={fadeLeft}
+        initial="hidden"
+        animate="visible"
+        transition={{ delay: 0.18 }}
+        className="flex-1 p-6 flex flex-col"
+      >
+        <h2 className="text-xl font-semibold mb-4 text-violet-700">Child Admin List</h2>
         <div className="flex-1 overflow-y-auto">
-          <table className="min-w-full table-fixed border border-gray-200 bg-white rounded-lg">
-            <thead className="bg-gray-100 sticky top-0 z-10">
+          <table className="min-w-full border-2 border-violet-200 bg-white rounded-xl shadow-xl transition-shadow">
+            <thead className="bg-gradient-to-r from-blue-100 via-violet-100 to-pink-100 sticky top-0 z-10">
               <tr>
-                <th className="w-1/2 py-2 px-3 text-left">Admin ID</th>
-                <th className="w-1/2 py-2 px-3 text-left">Email</th>
+                <th className="py-2 px-3 text-left text-violet-800">Admin ID</th>
+                <th className="py-2 px-3 text-left text-violet-800">Email</th>
+                <th className="py-2 px-3 text-left text-violet-800">Username</th>
+                <th className="py-2 px-3 text-left text-violet-800">Type</th>
+                <th className="py-2 px-3 text-center text-violet-800">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-violet-50">
               <AnimatePresence>
                 {childAdmins.map((admin) => (
                   <motion.tr
                     key={admin.childAdminId}
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3 }}
-                    className="hover:bg-gray-50"
+                    initial={{ opacity: 0, x: -24 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -38 }}
+                    transition={{ duration: 0.23 }}
+                    className="hover:bg-violet-50 transition"
                   >
                     <td className="py-2 px-3">{admin.childAdminId}</td>
                     <td className="py-2 px-3">{admin.email}</td>
+                    <td className="py-2 px-3">{admin.userName}</td>
+                    <td className="py-2 px-3">{admin.adminType || "Child_Admin"}</td>
+                    <td className="py-2 px-3 text-center">
+                      <button
+                        onClick={() => navigate(`/child/admin/profile/${admin._id}`)}
+                        className="px-4 py-1 rounded-lg bg-violet-600 text-white hover:bg-violet-700 shadow transition-transform hover:scale-105 font-semibold"
+                      >
+                        View
+                      </button>
+                    </td>
                   </motion.tr>
                 ))}
               </AnimatePresence>
             </tbody>
           </table>
-
           {childAdmins.length === 0 && (
-            <p className="mt-4 text-gray-500">No child admins yet.</p>
+            <p className="mt-4 text-violet-400">No child admins yet.</p>
           )}
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

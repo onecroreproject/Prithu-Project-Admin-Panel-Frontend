@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useAdminProfile } from "../../context/adminProfileContext";
 
+
 export default function AdminProfileEdit({ isOpen, onClose }) {
   const { profile, updateProfile, updating } = useAdminProfile();
+ 
 
   const [formData, setFormData] = useState({
     displayName: "",
@@ -57,7 +59,7 @@ export default function AdminProfileEdit({ isOpen, onClose }) {
   // ✅ Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await updateProfile(formData, avatar);
+    const res = await updateProfile(formData,avatar);
     if (res.success) {
       onClose();
     } else {

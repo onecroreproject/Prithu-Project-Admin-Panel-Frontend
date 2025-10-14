@@ -24,3 +24,14 @@ export const blockCreator = async (creatorId) => {
     throw new Error(error.response?.data?.message || "Failed to block creator");
   }
 };
+
+export const fetchTrendingCreators =async ()=>{
+  try{
+    const response =await api.get(API_ENDPOINTS.ADMIN_GET_TRENDING_CREATOR)
+    console.log(response.data)
+    return response.data.creators
+   }catch(err)
+   {
+    throw new Error("Error Fetch Trending Creator:",error);
+   }
+}

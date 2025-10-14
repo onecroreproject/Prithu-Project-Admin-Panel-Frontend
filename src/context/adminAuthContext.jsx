@@ -19,47 +19,57 @@ export const AdminAuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [otpSent, setOtpSent] = useState(false);
 
+  // ✅ Load from localStorage when app starts
   useEffect(() => {
     const storedAdmin = localStorage.getItem("admin");
     const storedRole = localStorage.getItem("role");
+
     if (storedAdmin) setAdmin(JSON.parse(storedAdmin));
     if (storedRole) setRole(storedRole);
   }, []);
 
+  // ✅ Admin / Child_Admin Login
   const login = async (identifier, password) => {
-  try {
-    setLoading(true);
-    const res = await api.post(API_ENDPOINTS.ADMIN_LOGIN, { identifier, password });
-    
-    const token = res.data.token;
-    const adminData = res.data.admin;
-    const grantedPermissions = res.data.grantedPermissions || [];
+    try {
+      setLoading(true);
+      setError(null);
 
-    // Save everything in localStorage
-    localStorage.setItem(
-      "admin",
-      JSON.stringify({ ...adminData, token, grantedPermissions,role })
-    );
+      const res = await api.post(API_ENDPOINTS.ADMIN_LOGIN, { identifier, password });
+      console.log(res.data)
+      const token = res.data.token;
+      const adminData = res.data.admin;
+      const grantedPermissions = res.data.grantedPermissions || [];
+      const userRole = adminData?.role || res.data.role || "Admin";
 
-    // Update state
-    setAdmin({ ...adminData, token, grantedPermissions });
-    setRole(adminData.role);
-    setError(null);
-  } catch (err) {
-    setError(err.response?.data?.error || "Login failed");
-  } finally {
-    setLoading(false);
-  }
-};
+      // ✅ Save to localStorage
+      localStorage.setItem(
+        "admin",
+        JSON.stringify({ ...adminData, token, grantedPermissions, role: userRole })
+      );
+      localStorage.setItem("role", userRole);
+      localStorage.setItem("token", token);
 
+      // ✅ Update state
+      setAdmin({ ...adminData, token, grantedPermissions, role: userRole });
+      setRole(userRole);
+    } catch (err) {
+      console.error("Login error:", err.response?.data || err);
+      setError(err.response?.data?.error || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // ✅ Logout
   const logout = () => {
     setAdmin(null);
     setRole(null);
     localStorage.removeItem("admin");
     localStorage.removeItem("role");
+    localStorage.removeItem("token");
   };
 
+  // ✅ Send OTP
   const sendOtp = async (email) => {
     try {
       setLoading(true);
@@ -73,6 +83,7 @@ export const AdminAuthProvider = ({ children }) => {
     }
   };
 
+  // ✅ Verify OTP
   const verifyOtp = async (otp) => {
     try {
       setLoading(true);
@@ -88,6 +99,7 @@ export const AdminAuthProvider = ({ children }) => {
     }
   };
 
+  // ✅ Reset Password
   const resetPassword = async (email, newPassword) => {
     try {
       setLoading(true);
@@ -102,29 +114,29 @@ export const AdminAuthProvider = ({ children }) => {
     }
   };
 
+  // ✅ Create Child Admin (only by main admin)
   const createChildAdmin = async (childData) => {
     try {
       setLoading(true);
 
-      if (childData.adminType !== "Child_Admin") {
+      if (role !== "Admin") {
         throw new Error("Only main admin can create child admins");
       }
 
-      if (childData.firstName && childData.lastName) {
-        childData.username = `${childData.firstName.trim()} ${childData.lastName.trim()}`;
-        delete childData.firstName;
-        delete childData.lastName;
-      }
+      const username =
+        childData.firstName && childData.lastName
+          ? `${childData.firstName.trim()} ${childData.lastName.trim()}`
+          : childData.username;
 
       const payload = {
-        username: childData.username,
+        username,
         email: childData.email,
         password: childData.password,
-        adminType: childData.adminType,
+        adminType: "Child_Admin",
       };
 
       const res = await api.post(API_ENDPOINTS.CHILD_ADMIN_REGISTER, payload, {
-        headers: { Authorization: `Bearer ${admin.token}` },
+        headers: { Authorization: `Bearer ${admin?.token}` },
       });
 
       setError(null);
