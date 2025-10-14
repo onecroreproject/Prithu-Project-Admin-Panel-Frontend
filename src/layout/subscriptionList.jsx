@@ -1,19 +1,28 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import SubscriptionCard from "../components/cards/subcriptionCard";
 import { fetchPlans, deletePlan, updatePlan } from "../Services/Subscription/subscriptionService";
+
+const listVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+  exit: { opacity: 0, y: -10, transition: { duration: 0.4 } },
+};
 
 const SubscriptionList = () => {
   const queryClient = useQueryClient();
 
-  // Fetch plans
   const { data: plans = [], isLoading, isError } = useQuery({
     queryKey: ["plans"],
     queryFn: fetchPlans,
   });
 
-  // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: deletePlan,
     onSuccess: () => {
@@ -25,7 +34,6 @@ const SubscriptionList = () => {
     },
   });
 
-  // Update mutation
   const updateMutation = useMutation({
     mutationFn: updatePlan,
     onSuccess: () => {
@@ -41,33 +49,44 @@ const SubscriptionList = () => {
   const handleUpdate = (id, updates) => updateMutation.mutate({ id, updates });
 
   if (isLoading)
-    return <p className="text-center text-gray-500">Loading plans...</p>;
+    return (
+      <p className="text-center text-indigo-500 animate-pulse select-none">
+        Loading subscription plans...
+      </p>
+    );
   if (isError)
-    return <p className="text-center text-red-500">Error fetching plans</p>;
+    return <p className="text-center text-red-600 font-semibold">Failed to fetch subscription plans.</p>;
+
+  if (plans.length === 0)
+    return (
+      <p className="text-center text-indigo-400 font-semibold mt-20 select-none">
+        No Plans Available
+      </p>
+    );
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
-      {plans.length === 0 ? (
-        <p className="col-span-full text-center text-gray-500">
-          No Plans Available
-        </p>
-      ) : (
-        plans.map((plan, index) => (
+    <motion.div
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+      variants={listVariants}
+      initial="hidden"
+      animate="visible"
+      exit="hidden"
+    >
+      <AnimatePresence>
+        {plans.map((plan) => (
           <motion.div
             key={plan._id}
-            initial={{ opacity: 0, x: -50 }} // fade in from left
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.15, duration: 0.5 }}
+            variants={itemVariants}
+            exit="exit"
+            layout
+            whileHover={{ scale: 1.03, boxShadow: "0 8px 15px rgba(0,0,0,0.1)" }}
+            className="rounded-xl"
           >
-            <SubscriptionCard
-              plan={plan}
-              onDelete={handleDelete}
-              onUpdate={handleUpdate}
-            />
+            <SubscriptionCard plan={plan} onDelete={handleDelete} onUpdate={handleUpdate} />
           </motion.div>
-        ))
-      )}
-    </div>
+        ))}
+      </AnimatePresence>
+    </motion.div>
   );
 };
 

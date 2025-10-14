@@ -33,7 +33,7 @@ const SubscriptionForm = () => {
         deviceLimit: "",
         isActive: true,
       });
-      queryClient.invalidateQueries(["subscriptionPlans"]);
+      queryClient.invalidateQueries(["plans"]);
     },
     onError: (err) => {
       toast.error(err.response?.data?.message || "Error creating subscription");
@@ -56,21 +56,20 @@ const SubscriptionForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg space-y-6 max-w-3xl mx-auto"
+      className="space-y-6 max-w-xl mx-auto bg-indigo-50 p-8 rounded-2xl shadow-md"
     >
-      <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 text-center">
+      <h3 className="text-xl font-semibold text-indigo-700 text-center mb-4 tracking-wide">
         Create Subscription Plan
-      </h2>
+      </h3>
 
-      {/* Grid layout for inputs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <input
           type="text"
           name="name"
           placeholder="Plan Name"
           value={formData.name}
           onChange={handleChange}
-          className="input-box w-full"
+          className="rounded-lg border border-indigo-300 focus:ring-2 focus:ring-indigo-400 px-4 py-3 transition placeholder:text-indigo-400"
           required
         />
         <input
@@ -79,7 +78,7 @@ const SubscriptionForm = () => {
           placeholder="Price"
           value={formData.price}
           onChange={handleChange}
-          className="input-box w-full"
+          className="rounded-lg border border-indigo-300 focus:ring-2 focus:ring-indigo-400 px-4 py-3 transition placeholder:text-indigo-400"
           required
         />
         <input
@@ -88,7 +87,7 @@ const SubscriptionForm = () => {
           placeholder="Duration (days)"
           value={formData.durationDays}
           onChange={handleChange}
-          className="input-box w-full"
+          className="rounded-lg border border-indigo-300 focus:ring-2 focus:ring-indigo-400 px-4 py-3 transition placeholder:text-indigo-400"
           required
         />
         <input
@@ -97,7 +96,7 @@ const SubscriptionForm = () => {
           placeholder="Download Limit"
           value={formData.downloadLimit}
           onChange={handleChange}
-          className="input-box w-full"
+          className="rounded-lg border border-indigo-300 focus:ring-2 focus:ring-indigo-400 px-4 py-3 transition placeholder:text-indigo-400"
         />
         <input
           type="number"
@@ -105,13 +104,13 @@ const SubscriptionForm = () => {
           placeholder="Device Limit"
           value={formData.deviceLimit}
           onChange={handleChange}
-          className="input-box w-full"
+          className="rounded-lg border border-indigo-300 focus:ring-2 focus:ring-indigo-400 px-4 py-3 transition placeholder:text-indigo-400"
         />
         <select
           name="planType"
           value={formData.planType}
           onChange={handleChange}
-          className="input-box w-full"
+          className="rounded-lg border border-indigo-300 focus:ring-2 focus:ring-indigo-400 px-4 py-3 transition"
         >
           <option value="trial">Trial</option>
           <option value="basic">Basic</option>
@@ -124,38 +123,36 @@ const SubscriptionForm = () => {
         placeholder="Description"
         value={formData.description}
         onChange={handleChange}
-        className="input-box w-full min-h-[100px]"
+        className="w-full rounded-lg border border-indigo-300 focus:ring-2 focus:ring-indigo-400 px-4 py-3 transition resize-none min-h-[100px] placeholder:text-indigo-400"
       />
 
-      {/* Checkboxes */}
       <div className="flex flex-wrap gap-6">
-        <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+        <label className="flex items-center gap-2 text-indigo-700">
           <input
             type="checkbox"
             name="adFree"
             checked={formData.adFree}
             onChange={handleChange}
-            className="h-4 w-4"
+            className="h-5 w-5 rounded border-indigo-400 text-indigo-600 focus:ring-2 focus:ring-indigo-400"
           />
           Ad-Free
         </label>
-        <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+        <label className="flex items-center gap-2 text-indigo-700">
           <input
             type="checkbox"
             name="isActive"
             checked={formData.isActive}
             onChange={handleChange}
-            className="h-4 w-4"
+            className="h-5 w-5 rounded border-indigo-400 text-indigo-600 focus:ring-2 focus:ring-indigo-400"
           />
           Active
         </label>
       </div>
 
-      {/* Submit Button */}
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium disabled:opacity-50 transition-colors"
+        className="w-full py-3 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition disabled:opacity-60"
       >
         {isLoading ? "Creating..." : "Create Plan"}
       </button>

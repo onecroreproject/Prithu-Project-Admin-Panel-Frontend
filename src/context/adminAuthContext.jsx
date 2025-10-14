@@ -62,12 +62,18 @@ export const AdminAuthProvider = ({ children }) => {
 
   // ✅ Logout
   const logout = () => {
-    setAdmin(null);
-    setRole(null);
-    localStorage.removeItem("admin");
-    localStorage.removeItem("role");
-    localStorage.removeItem("token");
-  };
+  // Clear state
+  setAdmin(null);
+  setRole(null);
+
+  // Clear localStorage
+  localStorage.removeItem("admin");
+  localStorage.removeItem("role");
+  localStorage.removeItem("token");
+
+  console.log("Logged out successfully");
+};
+
 
   // ✅ Send OTP
   const sendOtp = async (email) => {

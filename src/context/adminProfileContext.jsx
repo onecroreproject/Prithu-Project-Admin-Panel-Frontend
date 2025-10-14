@@ -18,7 +18,6 @@ const role = localStorage.getItem("role");
 const { token } = tokenData ? JSON.parse(tokenData) : { token: null };
 
 
- console.log(role)
 
 
 
@@ -29,7 +28,7 @@ const { token } = tokenData ? JSON.parse(tokenData) : { token: null };
       const res = await api.get(`/get/admin/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      
+      console.log(res.data)
       setProfile(res.data?.profile || null);
     } catch (err) {
       console.error("Error fetching admin profile", err);

@@ -5,7 +5,7 @@ import { useAdminProfile } from "../../context/adminProfileContext";
 export default function AdminProfileEdit({ isOpen, onClose }) {
   const { profile, updateProfile, updating } = useAdminProfile();
  
-
+console.log(profile)
   const [formData, setFormData] = useState({
     displayName: "",
     bio: "",

@@ -5,29 +5,36 @@ import { useAdminProfile } from "../context/adminProfileContext";
 
 export default function AdminProfileEdit({ isOpen = true, onClose }) {
   const { profile, updateProfile, updating } = useAdminProfile();
+  console.log(profile);
 
-
-  const [formData, setFormData] = useState({
-    displayName: "",
-    bio: "",
-    phoneNumber: "",
-    dateOfBirth: "",
-    maritalStatus: "",
-    maritalDate: "",
-    theme: "light",
-    language: "en",
-    timezone: "Asia/Kolkata",
-    gender: "",
-    userName: "",
-    email: "",
+  // Initialize formData with profile or fallback default "N/A" values if profile is null
+  const getInitialFormData = () => ({
+    displayName: profile?.displayName || "N/A",
+    bio: profile?.bio || "N/A",
+    phoneNumber: profile?.phoneNumber || "N/A",
+    dateOfBirth: profile?.dateOfBirth || "N/A",
+    maritalStatus: profile?.maritalStatus || "N/A",
+    maritalDate: profile?.maritalDate || "N/A",
+    theme: profile?.theme || "light",
+    language: profile?.language || "en",
+    timezone: profile?.timezone || "Asia/Kolkata",
+    gender: profile?.gender || "N/A",
+    userName: profile?.userName || "N/A",
+    email: profile?.userEmail || "N/A",
   });
 
+  const [formData, setFormData] = useState(getInitialFormData());
+  const [originalData, setOriginalData] = useState(getInitialFormData());
   const [avatar, setAvatar] = useState(null);
   const [preview, setPreview] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [show, setShow] = useState(false);
 
-  // ✅ Fade animation logic
+  const fadeLeft = {
+    hidden: { opacity: 0, x: -40 },
+    visible: { opacity: 1, x: 0, transition: { type: "spring", duration: 0.55, bounce: 0.17 } },
+  };
+
   useEffect(() => {
     if (isOpen) {
       setShow(true);
@@ -37,41 +44,63 @@ export default function AdminProfileEdit({ isOpen = true, onClose }) {
     }
   }, [isOpen]);
 
-  // ✅ Pre-fill form when modal opens
+  // When profile changes, reset formData to updated profile or fallback "N/A"
   useEffect(() => {
-    if (isOpen && profile) {
-      setFormData((prev) => ({ ...prev, ...profile }));
-      if (profile?.profileAvatar) setPreview(profile.profileAvatar);
+    const initData = getInitialFormData();
+    setFormData(initData);
+    setOriginalData(initData);
+    if (profile?.profileAvatar) {
+      setPreview(profile.profileAvatar);
+    } else {
+      setPreview(null);
     }
-  }, [isOpen, profile]);
+  }, [profile, isOpen]);
 
-  // ✅ Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  // ✅ Handle avatar upload
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setAvatar(file);
     if (file) setPreview(URL.createObjectURL(file));
   };
 
-  // ✅ Submit update
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await updateProfile(formData, avatar);
+
+    // Build payload with only changed fields
+    const changedData = {};
+    Object.keys(formData).forEach((key) => {
+      // Compare and include if different and not "N/A"
+      if (formData[key] !== originalData[key] && formData[key] !== "N/A") {
+        changedData[key] = formData[key];
+      }
+    });
+
+    // If nothing changed and no new avatar, maybe skip update or alert
+    if (Object.keys(changedData).length === 0 && !avatar) {
+      alert("No changes to update.");
+      return;
+    }
+
+    // Call updateProfile with changed data and avatar
+    const res = await updateProfile(changedData, avatar);
     if (res?.success) {
       alert("Profile updated successfully!");
       setEditMode(false);
       onClose && onClose();
+      // Update originalData to new formData after successful update
+      setOriginalData(formData);
     } else {
       alert(res?.message || "Update failed");
     }
   };
 
-  // ✅ Copy userId
   const handleCopy = (text) => {
     if (text) {
       navigator.clipboard.writeText(text);
@@ -79,34 +108,19 @@ export default function AdminProfileEdit({ isOpen = true, onClose }) {
     }
   };
 
-  // ✅ Edit/Cancel
-  const handleEdit = () => setEditMode(true);
-  const handleCancel = () => {
-    setEditMode(false);
-    if (profile) {
-      setFormData((prev) => ({ ...prev, ...profile }));
-      setPreview(profile?.profileAvatar || null);
-      setAvatar(null);
-    }
+  const handleEdit = () => {
+    setEditMode(true);
   };
 
-  // Animation variants
-  const fadeLeft = {
-    hidden: { opacity: 0, x: -40 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: { type: "spring", duration: 0.55, bounce: 0.17 },
-    },
+  const handleCancel = () => {
+    setEditMode(false);
+    // revert to current profile or N/A values
+    setFormData(originalData);
+    setPreview(profile?.profileAvatar || null);
+    setAvatar(null);
   };
 
   if (!show) return null;
-  if (!profile)
-    return (
-      <div className="w-full p-6 flex justify-center items-center text-gray-600">
-        Loading profile...
-      </div>
-    );
 
   return (
     <div className="flex flex-col md:flex-row gap-6 p-6 w-full">
@@ -118,13 +132,13 @@ export default function AdminProfileEdit({ isOpen = true, onClose }) {
         className="bg-white rounded-xl border border-gray-200 p-6 w-full md:max-w-xs flex flex-col items-center shadow"
       >
         <img
-          src={preview || profile?.profileAvatar || "/default-avatar.png"}
-          alt={profile?.email || "avatar"}
+          src={preview || "/default-avatar.png"}
+          alt={formData.email || "avatar"}
           className="w-20 h-20 rounded-full object-cover mb-2"
         />
         <div className="text-center w-full">
           <div className="font-semibold text-lg text-gray-900 mb-1">
-            {profile?.userEmail || "No email"}
+            {formData.email !== "N/A" ? formData.email : "No email"}
           </div>
           <div className="text-xs text-gray-500 mb-2">
             {profile?.lastLogin || "Last login not available"}
@@ -172,10 +186,7 @@ export default function AdminProfileEdit({ isOpen = true, onClose }) {
               )}
             </h2>
 
-            <form
-              onSubmit={handleSubmit}
-              className="grid grid-cols-1 md:grid-cols-2 gap-5"
-            >
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Avatar Upload */}
               {editMode && (
                 <motion.div
@@ -186,7 +197,7 @@ export default function AdminProfileEdit({ isOpen = true, onClose }) {
                   transition={{ duration: 0.25 }}
                 >
                   <img
-                    src={preview || profile?.profileAvatar || "/default-avatar.png"}
+                    src={preview || "/default-avatar.png"}
                     alt="avatar"
                     className="w-20 h-20 rounded-full border object-cover"
                   />
@@ -194,35 +205,28 @@ export default function AdminProfileEdit({ isOpen = true, onClose }) {
                 </motion.div>
               )}
 
-              {/* First Name */}
+              {/* Name */}
               <div>
-                <label className="block mb-1 text-sm text-gray-600">
-                   Name
-                </label>
+                <label className="block mb-1 text-sm text-gray-600">Name</label>
                 {!editMode ? (
-                  <div className="bg-gray-50 rounded px-3 py-2">
-                    {profile?.userName || "-"}
-                  </div>
+                  <div className="bg-gray-50 rounded px-3 py-2">{formData.userName || "-"}</div>
                 ) : (
                   <input
                     type="text"
-                    name="firstName"
+                    name="userName"
                     value={formData.userName || ""}
                     onChange={handleChange}
                     className="w-full border px-3 py-2 rounded"
+                    placeholder="N/A"
                   />
                 )}
               </div>
 
               {/* Email */}
               <div className="md:col-span-2">
-                <label className="block mb-1 text-sm text-gray-600">
-                  Email Address
-                </label>
+                <label className="block mb-1 text-sm text-gray-600">Email Address</label>
                 <div className="flex items-center">
-                  <div className="bg-gray-50 rounded px-3 py-2 flex-1">
-                    {profile?.userEmail || "-"}
-                  </div>
+                  <div className="bg-gray-50 rounded px-3 py-2 flex-1">{formData.email || "-"}</div>
                   <span className="ml-2 px-2 py-1 rounded bg-green-50 text-green-600 text-xs font-medium">
                     Verified
                   </span>
@@ -231,20 +235,17 @@ export default function AdminProfileEdit({ isOpen = true, onClose }) {
 
               {/* Phone Number */}
               <div className="md:col-span-2">
-                <label className="block mb-1 text-sm text-gray-600">
-                  Phone Number
-                </label>
+                <label className="block mb-1 text-sm text-gray-600">Phone Number</label>
                 {!editMode ? (
-                  <div className="bg-gray-50 rounded px-3 py-2">
-                    {profile?.phoneNumber || "-"}
-                  </div>
+                  <div className="bg-gray-50 rounded px-3 py-2">{formData.phoneNumber || "-"}</div>
                 ) : (
                   <input
                     type="text"
-                    name="phone"
+                    name="phoneNumber"
                     value={formData.phoneNumber || ""}
                     onChange={handleChange}
                     className="w-full border px-3 py-2 rounded"
+                    placeholder="N/A"
                   />
                 )}
               </div>
@@ -253,38 +254,35 @@ export default function AdminProfileEdit({ isOpen = true, onClose }) {
               {editMode && (
                 <>
                   <div className="md:col-span-2">
-                    <label className="block mb-1 text-sm text-gray-600">
-                      Display Name
-                    </label>
+                    <label className="block mb-1 text-sm text-gray-600">Display Name</label>
                     <input
                       type="text"
                       name="displayName"
                       value={formData.displayName || ""}
                       onChange={handleChange}
                       className="w-full border px-3 py-2 rounded"
+                      placeholder="N/A"
                     />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block mb-1 text-sm text-gray-600">
-                      Username
-                    </label>
+                    <label className="block mb-1 text-sm text-gray-600">Username</label>
                     <input
                       type="text"
                       name="userName"
                       value={formData.userName || ""}
                       onChange={handleChange}
                       className="w-full border px-3 py-2 rounded"
+                      placeholder="N/A"
                     />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block mb-1 text-sm text-gray-600">
-                      Bio
-                    </label>
+                    <label className="block mb-1 text-sm text-gray-600">Bio</label>
                     <textarea
                       name="bio"
                       value={formData.bio || ""}
                       onChange={handleChange}
                       className="w-full border px-3 py-2 rounded"
+                      placeholder="N/A"
                     />
                   </div>
                   <div className="md:col-span-2 flex gap-2 justify-end mt-2">
@@ -316,25 +314,15 @@ export default function AdminProfileEdit({ isOpen = true, onClose }) {
           animate="visible"
           className="bg-white rounded-xl border border-gray-200 p-6 mt-2 shadow"
         >
-          <h2 className="text-base font-semibold mb-3">
-            Social Media Account
-          </h2>
+          <h2 className="text-base font-semibold mb-3">Social Media Account</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="block mb-1 text-sm text-gray-600">
-                Facebook
-              </label>
-              <div className="bg-gray-50 rounded px-3 py-2">
-                {profile?.facebook || "-"}
-              </div>
+              <label className="block mb-1 text-sm text-gray-600">Facebook</label>
+              <div className="bg-gray-50 rounded px-3 py-2">{profile?.facebook || "-"}</div>
             </div>
             <div>
-              <label className="block mb-1 text-sm text-gray-600">
-                Instagram
-              </label>
-              <div className="bg-gray-50 rounded px-3 py-2">
-                {profile?.instagram || "-"}
-              </div>
+              <label className="block mb-1 text-sm text-gray-600">Instagram</label>
+              <div className="bg-gray-50 rounded px-3 py-2">{profile?.instagram || "-"}</div>
             </div>
           </div>
           <div className="mt-4 flex justify-start">

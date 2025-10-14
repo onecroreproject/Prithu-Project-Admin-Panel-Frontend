@@ -2,29 +2,48 @@ import { motion } from "framer-motion";
 import SubscriptionForm from "../components/form/subscriptionForm";
 import SubscriptionList from "../layout/subscriptionList";
 
+const containerVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut", staggerChildren: 0.15 },
+  },
+};
+
 const SubscriptionPage = () => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="flex flex-col md:flex-row gap-6 p-4 md:p-6"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="flex flex-col gap-10 p-6 md:p-10 bg-gradient-to-tr from-indigo-50 via-purple-50 to-pink-50 min-h-screen"
     >
-      {/* Left side - Subscription Form */}
-      <div className="w-full md:w-1/3 bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-4 md:p-6">
-        <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">
+      {/* Top - Form */}
+      <motion.div
+        className="w-full max-w-3xl mx-auto bg-white rounded-3xl shadow-lg p-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.75 }}
+      >
+        <h2 className="text-2xl font-bold mb-6 text-indigo-700 tracking-wide text-center">
           Create Subscription
         </h2>
         <SubscriptionForm />
-      </div>
+      </motion.div>
 
-      {/* Right side - Subscription List */}
-      <div className="flex-1 bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-4 md:p-6 overflow-auto max-h-[80vh]">
-        <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">
+      {/* Below - List */}
+      <motion.div
+        className="w-full max-w-7xl mx-auto bg-white rounded-3xl shadow-lg p-6 overflow-auto max-h-[70vh]"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.75 }}
+      >
+        <h2 className="text-2xl font-bold mb-6 text-indigo-700 tracking-wide text-center">
           All Subscriptions
         </h2>
         <SubscriptionList />
-      </div>
+      </motion.div>
     </motion.div>
   );
 };
