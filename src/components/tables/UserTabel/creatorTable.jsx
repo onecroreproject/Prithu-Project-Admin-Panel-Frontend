@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableHeader, TableRow } from "../../ui/tab
 import Badge from "../../ui/badge/Badge";
 import { FaEye, FaBan } from "react-icons/fa";
 import CreatorDetailModal from "../../../components/Pop-UP/creatorDetailPopUp"; 
-import { fetchCreators, blockCreator } from "../../../Services/CreatorServices/creatorServices.js";
+import { fetchCreators, blockCreator } from "../../../Services/creatorServices/creatorServices";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function CreatorTable() {

@@ -17,7 +17,7 @@ export default function AdminChildPage() {
     queryKey: ["childAdmins"],
     queryFn: getChildAdmins,
   });
-console.log(childAdmins)
+
   const handleAddChildAdmin = (newAdmin) => {
     queryClient.setQueryData(["childAdmins"], (old = []) => [newAdmin, ...old]);
   };
@@ -65,35 +65,47 @@ console.log(childAdmins)
             </thead>
             <tbody className="divide-y divide-violet-50">
               <AnimatePresence>
-                {childAdmins.map((admin) => (
-                  <motion.tr
-                    key={admin.childAdminId}
-                    initial={{ opacity: 0, x: -24 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -38 }}
-                    transition={{ duration: 0.23 }}
-                    className="hover:bg-violet-50 transition"
-                  >
-                    <td className="py-2 px-3">{admin.childAdminId}</td>
-                    <td className="py-2 px-3">{admin.email}</td>
-                    <td className="py-2 px-3">{admin.userName}</td>
-                    <td className="py-2 px-3">{admin.adminType || "Child_Admin"}</td>
-                    <td className="py-2 px-3 text-center">
-                      <button
-                        onClick={() => navigate(`/child/admin/profile/${admin._id}`)}
-                        className="px-4 py-1 rounded-lg bg-violet-600 text-white hover:bg-violet-700 shadow transition-transform hover:scale-105 font-semibold"
+                {childAdmins.length === 0
+                  ? (
+                      <motion.tr
+                        key="no-admin"
+                        initial={{ opacity: 0, x: -24 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -38 }}
+                        transition={{ duration: 0.23 }}
                       >
-                        View
-                      </button>
-                    </td>
-                  </motion.tr>
-                ))}
+                        <td colSpan={5} className="py-8 text-center text-violet-400 font-semibold">
+                          Child Admin Not Available
+                        </td>
+                      </motion.tr>
+                    )
+                  : childAdmins.map((admin) => (
+                      <motion.tr
+                        key={admin.childAdminId || admin._id}
+                        initial={{ opacity: 0, x: -24 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -38 }}
+                        transition={{ duration: 0.23 }}
+                        className="hover:bg-violet-50 transition"
+                      >
+                        <td className="py-2 px-3">{admin.childAdminId ? admin.childAdminId : "No ID"}</td>
+                        <td className="py-2 px-3">{admin.email ? admin.email : "No email"}</td>
+                        <td className="py-2 px-3">{admin.userName ? admin.userName : "Unnamed"}</td>
+                        <td className="py-2 px-3">{admin.adminType ? admin.adminType : "Child_Admin"}</td>
+                        <td className="py-2 px-3 text-center">
+                          <button
+                            onClick={() => navigate(`/child/admin/profile/${admin._id}`)}
+                            className="px-4 py-1 rounded-lg bg-violet-600 text-white hover:bg-violet-700 shadow transition-transform hover:scale-105 font-semibold"
+                          >
+                            View
+                          </button>
+                        </td>
+                      </motion.tr>
+                    ))
+                }
               </AnimatePresence>
             </tbody>
           </table>
-          {childAdmins.length === 0 && (
-            <p className="mt-4 text-violet-400">No child admins yet.</p>
-          )}
         </div>
       </motion.div>
     </motion.div>
