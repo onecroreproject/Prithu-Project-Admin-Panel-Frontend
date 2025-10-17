@@ -1,6 +1,5 @@
 export default function UserAnalyticsTabs({ activeTab, onTabChange }) {
   const tabs = [
-    { key: "feeds", label: "Feeds" },
     { key: "following", label: "Following" },
     { key: "interested", label: "Interested Categories" },
     { key: "nonInterested", label: "Non-Interested Categories" },

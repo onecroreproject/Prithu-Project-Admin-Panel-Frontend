@@ -2,16 +2,14 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "../../ui/table";
 import Badge from "../../ui/badge/Badge";
-import { FaEye, FaBan, FaTrash } from "react-icons/fa";
-import UserDetailModal from "../../../components/Pop-UP/userDetailPopUp"; 
-import { fetchUsers, blockUser, deleteUser } from "../../../Services/UserServices/userServices.js";
+import { FaEye, FaBan, FaTrash, FaChartLine } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router";
-import IndividualUserProfilePage from "../../../pages/UserProfile/UserAnalitical/individualUserProfilePage.jsx";
+import { fetchUsers, blockUser, deleteUser } from "../../../Services/UserServices/userServices.js";
 
 export default function BasicTableOne() {
   const queryClient = useQueryClient();
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   // ✅ Fetch users
   const { data: users = [], isLoading, isError } = useQuery({
@@ -36,9 +34,9 @@ export default function BasicTableOne() {
     },
   });
 
-const handleView=async(id)=>{
-  navigate(`/individual/user/profile/${id}`)
-}
+  const handleView = async (id) => {
+    navigate(`/individual/user/profile/${id}`);
+  };
 
   // ✅ Delete user mutation
   const deleteMutation = useMutation({
@@ -54,7 +52,6 @@ const handleView=async(id)=>{
     },
   });
 
-  // Fallback handler for missing values
   const displayVal = (value) =>
     value === null || value === undefined || value === "" ? "No Data Available" : value;
 
@@ -64,8 +61,7 @@ const handleView=async(id)=>{
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
       <Toaster position="top-right" reverseOrder={false} />
-      {/* Download Button */}
-     
+
       <div className="max-w-full overflow-x-auto">
         <Table className="min-w-full text-sm text-gray-700">
           <TableHeader className="border-b border-gray-200 dark:border-white/[0.05] bg-gray-50 dark:bg-gray-900">
@@ -78,6 +74,7 @@ const handleView=async(id)=>{
               <TableCell isHeader className="px-6 py-4 font-semibold text-left">Actions</TableCell>
             </TableRow>
           </TableHeader>
+
           <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
             {users.length === 0 ? (
               <TableRow>
@@ -87,15 +84,21 @@ const handleView=async(id)=>{
               </TableRow>
             ) : (
               users.map((user, idx) => (
-                <TableRow key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                <TableRow key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition">
                   {/* User Info */}
                   <TableCell className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 overflow-hidden rounded-full bg-gray-100 flex items-center justify-center">
-                        {user.profileAvatar ?
-                          <img width={40} height={40} src={user.profileAvatar} alt={user.userName || "Avatar"} />
-                          : <span className="text-xs text-gray-400">No Data Available</span>
-                        }
+                        {user.profileAvatar ? (
+                          <img
+                            width={40}
+                            height={40}
+                            src={user.profileAvatar}
+                            alt={user.userName || "Avatar"}
+                          />
+                        ) : (
+                          <span className="text-xs text-gray-400">No Data</span>
+                        )}
                       </div>
                       <div>
                         <span className="block font-medium">{displayVal(user.userName)}</span>
@@ -103,70 +106,85 @@ const handleView=async(id)=>{
                       </div>
                     </div>
                   </TableCell>
+
                   {/* Registration Date */}
                   <TableCell className="px-6 py-4">
-                    {
-                      user.createdAt ?
-                        new Date(user.createdAt).toLocaleString("en-IN", {
+                    {user.createdAt
+                      ? new Date(user.createdAt).toLocaleString("en-IN", {
                           day: "2-digit",
                           month: "short",
                           year: "numeric",
                           hour: "2-digit",
                           minute: "2-digit",
                         })
-                        : "No Data Available"
-                    }
+                      : "No Data Available"}
                   </TableCell>
+
                   {/* Subscription Status */}
                   <TableCell className="px-6 py-4">
-                    {typeof user.subscriptionActive === "boolean" ?
+                    {typeof user.subscriptionActive === "boolean" ? (
                       <Badge size="sm" color={user.subscriptionActive ? "success" : "warning"}>
                         {user.subscriptionActive ? "Active" : "Inactive"}
                       </Badge>
-                      : "No Data Available"}
+                    ) : (
+                      "No Data Available"
+                    )}
                   </TableCell>
+
                   {/* Online Status */}
                   <TableCell
                     className={`px-6 py-4 text-center rounded-md ${
                       user.isOnline === true
                         ? "text-green-700 bg-green-50 dark:text-green-500"
                         : user.isOnline === false
-                          ? "text-red-700 bg-red-50 dark:text-red-500"
-                          : "text-gray-500"
+                        ? "text-red-700 bg-red-50 dark:text-red-500"
+                        : "text-gray-500"
                     }`}
                   >
-                    {user.isOnline === true ? "Online" : user.isOnline === false ? "Offline" : "No Data Available"}
+                    {user.isOnline === true
+                      ? "Online"
+                      : user.isOnline === false
+                      ? "Offline"
+                      : "No Data Available"}
                   </TableCell>
+
                   {/* Last Active */}
                   <TableCell className="px-6 py-4">
-                    {
-                      user.lastActiveAt ?
-                        new Date(user.lastActiveAt).toLocaleString("en-IN", {
+                    {user.lastActiveAt
+                      ? new Date(user.lastActiveAt).toLocaleString("en-IN", {
                           day: "2-digit",
                           month: "short",
                           year: "numeric",
                           hour: "2-digit",
                           minute: "2-digit",
                         })
-                        : "No Data Available"
-                    }
+                      : "No Data Available"}
                   </TableCell>
+
                   {/* Actions */}
                   <TableCell className="px-6 py-4">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-4">
                       {/* View */}
                       <button
-                        className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-                        title="View"
+                        className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                        title="View Profile"
                         onClick={() => handleView(user.userId)}
                         disabled={!user.userId}
                       >
                         <FaEye className="w-5 h-5 text-gray-500" />
                       </button>
-                      {/* Block/Unblock */}
+
+                      {/* Analytical */}
                       <button
-                        className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-                        title={user.isBlocked ? "Unblock" : "Block"}
+                        onClick={() => navigate(`/user/analitical/page/${user.userId}`)}
+                      >
+                        <FaChartLine className="w-4 h-4" />
+                      </button>
+
+                      {/* Block / Unblock */}
+                      <button
+                        className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                        title={user.isBlocked ? "Unblock User" : "Block User"}
                         onClick={() => blockMutation.mutate(user.userId)}
                         disabled={blockMutation.isLoading || !user.userId}
                       >
@@ -178,12 +196,17 @@ const handleView=async(id)=>{
                           <FaBan className="w-5 h-5 text-red-500" />
                         )}
                       </button>
+
                       {/* Delete */}
                       <button
-                        className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-                        title="Delete"
+                        className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                        title="Delete User"
                         onClick={() => {
-                          if (window.confirm(`Are you sure you want to delete ${user.userName}? This action cannot be undone.`)) {
+                          if (
+                            window.confirm(
+                              `Are you sure you want to delete ${user.userName}? This action cannot be undone.`
+                            )
+                          ) {
                             deleteMutation.mutate(user.userId);
                           }
                         }}
@@ -191,7 +214,9 @@ const handleView=async(id)=>{
                       >
                         <FaTrash
                           className={`w-5 h-5 ${
-                            deleteMutation.isLoading ? "text-gray-300" : "text-gray-500 hover:text-red-600"
+                            deleteMutation.isLoading
+                              ? "text-gray-300"
+                              : "text-gray-500 hover:text-red-600"
                           }`}
                         />
                       </button>

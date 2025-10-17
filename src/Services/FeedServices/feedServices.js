@@ -8,7 +8,7 @@ import { API_ENDPOINTS } from "../../API-Constanse/apiConstance.js";
 export async function fetchCategories() {
   try {
     const res = await Api.get(API_ENDPOINTS.ADMIN_GET_CATEGORY);
-    console.log(res.data)
+
     return res.data.categories; 
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch categories");
@@ -20,11 +20,9 @@ export async function uploadFeed(formData) {
   try {
     const tokenData = localStorage.getItem("admin");
     if (!tokenData) throw new Error("Admin token not found");
-console.log(tokenData)
-    const  {token}  = JSON.parse(tokenData);
-    console.log(token)
 
-    console.log(formData)
+    const  {token}  = JSON.parse(tokenData);
+
 
     const res = await Api.post(API_ENDPOINTS.ADMIN_UPLOAD_FEED, formData, {
       headers: {
@@ -67,7 +65,7 @@ export async function deleteFeed(formData) {
 // ✅ Add Category
 export async function addCategory(data) {
   try {
-    console.log(data)
+
     const res = await Api.post("/admin/add/feed/category", data);
     return res.data;
   } catch (error) {
@@ -80,7 +78,7 @@ export async function addCategory(data) {
 export async function fetchFeeds() {
   try {
     const res = await Api.get(API_ENDPOINTS.ADMIN_GET_ALL_FEED);
-    console.log(res.data)
+
     return res.data.feeds; 
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch feeds");

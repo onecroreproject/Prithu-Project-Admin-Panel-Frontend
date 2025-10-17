@@ -19,9 +19,9 @@ export const blockUser = async (userId) => {
 
 
 export const deleteUser = async (userId) => {
-  console.log(userId)
+
   const { data } = await Api.delete(`${API_ENDPOINTS.ADMIN_DELETE_USER}/${userId}`);
-  console.log(data)
+
   return data;
 };
 
@@ -71,13 +71,13 @@ export const fetchUserFollowing = async (userId, params) => {
 
 export const fetchUserInterested = async (userId, params) => {
   const res = await Api.get(`${API_ENDPOINTS.USER_ANALYTICS_INTERESTED}/${userId}${buildQueryParams(params)}`);
-  console.log(res.data)
+
   return res.data.categories;
 };
 
 export const fetchUserNonInterested = async (userId, params) => {
   const res = await Api.get(`${API_ENDPOINTS.USER_ANALYTICS_NON_INTERESTED}/${userId}${buildQueryParams(params)}`);
- console.log(res.data)
+
   return res.data.categories;
 };
 
@@ -99,7 +99,7 @@ export const fetchUserDisliked = async (userId, params) => {
 
 export const fetchUserCommented = async (userId, params) => {
   const res = await Api.get(`${API_ENDPOINTS.USER_ANALYTICS_COMMENTED}/${userId}${buildQueryParams(params)}`);
-  console.log(res.data)
+
   return res.data.commentedFeeds;
 };
 

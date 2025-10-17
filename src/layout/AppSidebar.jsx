@@ -21,7 +21,6 @@ const navItems = [
     name: "Admin",
     permission: "canManageChildAdmins",
     subItems: [
-      { name: "Admin Profile", path: "/admin/profile/page", permission: null },
       { name: "ChildAdmin Creation", path: "/child/admin/page", permission: "canManageChildAdminsCreation" },
     ],
   },
@@ -31,7 +30,6 @@ const navItems = [
     permission: "canManageUsers",
     subItems: [
       { name: "User Detail", path: "/user/profile/dashboard", permission: "canManageUsersDetail" },
-      { name: "User Analytics", path: "/user/analitical/table", permission: "canManageUsersAnalytics" },
       { name: "User Feed Reports", path: "/user-reportinfo", permission: "canManageUsersFeedReports" },
     ],
   },
@@ -54,6 +52,14 @@ const navItems = [
     permission: "canManageSettings",
     subItems: [
       { name: "Manage Subscriptions", path: "/subscription/page", permission: "canManageSettingsSubscriptions" },
+    ],
+  },
+  {
+    icon: <TableIcon />,
+    name: "Sales",
+    permission: "canManageSalesSettings",
+    subItems: [
+      { name: "Sales Dashboard", path: "/sales/dashboard", permission: "canManageSalesDashboard" },
     ],
   },
   { icon: <PageIcon />, name: "Pages", permission: null, subItems: [

@@ -85,7 +85,7 @@ export default function ChildAdminPermissionPage() {
   };
 
   const handleSave = () => {
-    console.log(id)
+
     mutation.mutate({
       grantedPermissions: granted,
       menuPermissions: permissions.menuPermissions || [],

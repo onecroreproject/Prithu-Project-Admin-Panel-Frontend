@@ -2,7 +2,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function ReferralHeader({ user }) {
-    console.log(user)
+ 
   return (
     <AnimatePresence mode="wait">
       <motion.div

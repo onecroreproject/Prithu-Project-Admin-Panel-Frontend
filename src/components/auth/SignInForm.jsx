@@ -17,14 +17,13 @@ export default function SignInForm() {
   const { login, error, loading, role ,admin} = useAdminAuth();
   const navigate = useNavigate();
 
-console.log(admin)
   
   
-  //  useEffect(() => {
-  //   if (admin?.token && (role === "Admin" || role === "Child_Admin")) {
-  //     navigate("/"); // Dashboard
-  //   }
-  // }, [admin, role, navigate]);
+   useEffect(() => {
+    if (admin?.token) {
+      navigate("/");
+    }
+  }, [admin,navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,6 +31,9 @@ console.log(admin)
 
     if (role === "Admin" || role === "Child_Admin") navigate("/");
   };
+
+
+
 
   const pageVariants = {
     initial: { opacity: 0, x: "-100%" },

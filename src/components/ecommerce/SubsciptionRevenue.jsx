@@ -11,7 +11,7 @@ export default function SubscriptionRevenue() {
     staleTime: 1000 * 60 * 5, // cache for 5 minutes
   });
 
-  console.log(stats)
+
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p className="text-red-500">Failed to load stats</p>;

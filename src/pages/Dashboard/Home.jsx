@@ -13,6 +13,7 @@ export default function Home() {
   const navigate = useNavigate();
   const { admin } = useAdminAuth();
 
+
   useEffect(() => {
     if (!admin?.token) {
       navigate("/signin"); 

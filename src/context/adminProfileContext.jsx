@@ -1,34 +1,36 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import api from "../Utils/axiosApi";
-import { useAdminAuth } from "../context/adminAuthContext";
 
 // Create Context
 const AdminProfileContext = createContext();
 
-// Custom hook for consuming
-export const useAdminProfile = () => useContext(AdminProfileContext);
+// ✅ Custom hook to consume context
+export const useAdminProfile = () => {
+  const context = useContext(AdminProfileContext);
+  if (!context) {
+    throw new Error("useAdminProfile must be used within an AdminProfileProvider");
+  }
+  return context;
+};
 
-// Provider
-export const AdminProfileProvider = ({ children}) => {
+// ✅ Provider component
+export const AdminProfileProvider = ({ children }) => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [updating, setUpdating] = useState(false);
-const tokenData = localStorage.getItem("admin");
-const role = localStorage.getItem("role");
-const { token } = tokenData ? JSON.parse(tokenData) : { token: null };
 
+  const tokenData = localStorage.getItem("admin");
+  const role = localStorage.getItem("role");
+  const { token } = tokenData ? JSON.parse(tokenData) : { token: null };
 
-
-
-
-  // ✅ Fetch profile
+  // Fetch profile
   const fetchProfile = async () => {
+    if (!token) return;
     setLoading(true);
     try {
-      const res = await api.get(`/get/admin/profile`, {
+      const res = await api.get("/get/admin/profile", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log(res.data)
       setProfile(res.data?.profile || null);
     } catch (err) {
       console.error("Error fetching admin profile", err);
@@ -37,32 +39,34 @@ const { token } = tokenData ? JSON.parse(tokenData) : { token: null };
     }
   };
 
-// ✅ Update profile
-const updateProfile = async (formData,avatar) => {
+  // Update profile
+  const updateProfile = async (formData, avatar) => {
+  if (!token) return { success: false, message: "No token available" };
   setUpdating(true);
 
   try {
-console.log(avatar)
-    const fd = new FormData();
-    Object.keys(formData).forEach((key) => {
-      if (formData[key] !== undefined && formData[key] !== "")
-        fd.append(key, formData[key]);
-    });
+   const fd = new FormData();
+
+// Other form data
+Object.keys(formData).forEach((key) => {
+  if (formData[key] !== undefined && formData[key] !== "")
+    fd.append(key, formData[key]);
+});
+
+// ✅ Stringify socialLinks
+// Correct way to append socialLinks in frontend
+fd.append("socialLinks", JSON.stringify(formData.socialLinks));
 
 
-    if (avatar) fd.append("file", avatar);
+// Avatar file
+if (avatar) fd.append("file", avatar);
 
-    // 🔹 Determine correct API endpoint based on role
+
     let endpoint = "";
-    if (role === "Admin") {
-      endpoint = "/admin/profile/detail/update";
-    } else if (role === "Child_Admin") {
-      endpoint = "/child/admin/profile/detail/update";
-    } else {
-      throw new Error("Invalid role: cannot update profile");
-    }
+    if (role === "Admin") endpoint = "/admin/profile/detail/update";
+    else if (role === "Child_Admin") endpoint = "/child/admin/profile/detail/update";
+    else throw new Error("Invalid role: cannot update profile");
 
-    // 🔹 Send request
     await api.put(endpoint, fd, {
       headers: {
         Authorization: `Bearer ${token}`,

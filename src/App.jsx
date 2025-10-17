@@ -13,7 +13,6 @@ import Home from "./pages/Dashboard/Home";
 import UploadPage from "./pages/uploadPage";
 import ReferralTreePage from "./pages/userTree";
 import UserAnalytics from "./pages/UserProfile/UserAnalitical/userAnaliticalPage";
-import UserTableAnalytical from "./components/tables/UserTabel/userAnaliticalTable";
 import UserProfiles from "./pages/UserProfile/UserProfiles";
 import Videos from "./pages/UiElements/Videos";
 import Images from "./pages/UiElements/Images";
@@ -39,8 +38,9 @@ import ChildAdminPermissionPage from "./pages/ChildAdminRegister/childAdminPermi
 import { ErrorBoundary } from "react-error-boundary";
 import TrendingCreatorsPage from "./pages/trendingCreator";
 import AdminProfilePage from "./pages/adminProfilePage";
-import ChildAdminProfile from "./pages/childAdminProfilePage";
+import ChildAdminProfile from "./pages/ChildAdminProfilePage/childAdminProfilePage";
 import IndividualUserProfilePage from "./pages/UserProfile/UserAnalitical/individualUserProfilePage";
+import SalesDashboard from "./pages/SalesDashboard/salesdashBoardPage";
 
 function RouteErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -73,7 +73,6 @@ function AnimatedRoutes() {
           <Route path="/admin/upload/page" element={<UploadPage />} />
           <Route path="/tree" element={<ReferralTreePage />} />
           <Route path="/user/analitical/page/:userId" element={<UserAnalytics />} />
-          <Route path="/user/analitical/table" element={<UserTableAnalytical />} />
           <Route path="/referal/tree/page/:userId" element={<ReferralTreePage />} />
           <Route path="/profile" element={<UserProfiles />} />
           <Route path="/calendar" element={<Calendar />} />
@@ -98,6 +97,7 @@ function AnimatedRoutes() {
           <Route path="/admin/profile/page" element={<AdminProfilePage/>}/>
           <Route path="/child/admin/profile/:id" element={<ChildAdminProfile/>}/>
           <Route path="/individual/user/profile/:id" element={<IndividualUserProfilePage/>}/>
+          <Route path="/sales/dashboard" element={<SalesDashboard/>}/>
         </Route>
 
         {/* Fallback Route */}

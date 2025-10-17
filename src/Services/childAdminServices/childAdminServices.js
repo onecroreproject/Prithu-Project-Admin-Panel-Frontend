@@ -24,8 +24,7 @@ export const getChildAdmins = async () => {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    console.log(data)
-
+    
     return data?.admins || [];
   } catch (err) {
     console.error("Failed to fetch child admins:", err);
@@ -114,4 +113,26 @@ export const blockChildAdmin = async (id) => {
 export const deleteChildAdmin = async (id) => {
   const { data } = await api.delete(`${API_ENDPOINTS.DETETE_CHILD_ADMIN}/${id}`);
   return data;
+};
+
+
+
+
+
+export const updateChildAdminProfile = async (id, updateData) => {
+  if (!id) throw new Error("Admin ID is required");
+  if (!updateData) throw new Error("Update data is required");
+
+  const { data } = await api.put(
+    `${API_ENDPOINTS.UPDATE_CHILD_ADMIN_PROFILE}/${id}`,
+    updateData,
+    {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  return data.data; // return updated profile
 };

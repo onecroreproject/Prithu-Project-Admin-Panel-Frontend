@@ -5,7 +5,7 @@ import { API_ENDPOINTS } from "../../API-Constanse/apiConstance";
 export const fetchCreators = async () => {
   try {
     const response = await api.get(API_ENDPOINTS.ADMIN_GET_ALL_CREATOR);
-    console.log(response.data)
+ 
     return response.data.creators;
   } catch (error) {
     console.error("Error fetching creators:", error);
@@ -28,7 +28,7 @@ export const blockCreator = async (creatorId) => {
 export const fetchTrendingCreators =async ()=>{
   try{
     const response =await api.get(API_ENDPOINTS.ADMIN_GET_TRENDING_CREATOR)
-    console.log(response.data)
+
     return response.data.creators
    }catch(err)
    {

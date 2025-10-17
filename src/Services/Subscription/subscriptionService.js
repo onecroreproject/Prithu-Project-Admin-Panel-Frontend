@@ -11,7 +11,7 @@ export const deletePlan = async (id) => {
 };
 
 export const updatePlan = async ({ id, updates }) => {
-    console.log({ id, updates })
+
   return await api.put(`${API_ENDPOINTS.ADMIN_UPDATE_SUBSCRIPTION_PLAN}/${id}`,updates)
 }
 

@@ -1,4 +1,3 @@
-// components/UserOverviewTabs.jsx
 import { AnimatePresence } from "framer-motion";
 import TabContent from "./TabContent";
 
@@ -8,15 +7,16 @@ export default function UserOverviewTabs({ user, activeTab, setActiveTab }) {
     "Account",
     "Subscription",
     "Device",
-    "Activity",
+    "Referrals",
     "Education",
     "Employment",
   ];
 
   return (
-    <div className="bg-white rounded-2xl shadow p-7 flex flex-col">
+    <div className="bg-white rounded-2xl shadow p-7 flex flex-col h-max">
       <div className="font-semibold text-lg mb-4">User Overview</div>
 
+      {/* Tabs */}
       <div className="flex border-b border-gray-100 mb-4 overflow-x-auto">
         {tabs.map((tab) => (
           <button
@@ -33,7 +33,14 @@ export default function UserOverviewTabs({ user, activeTab, setActiveTab }) {
         ))}
       </div>
 
-      <div className="overflow-y-auto max-h-[290px]">
+      {/* Fixed Height Content Area */}
+      <div
+        className="overflow-y-auto"
+        style={{
+          minHeight: "600px",  // 👈 standard height
+          maxHeight: "600px",
+        }}
+      >
         <AnimatePresence mode="wait">
           <TabContent user={user} activeTab={activeTab} />
         </AnimatePresence>

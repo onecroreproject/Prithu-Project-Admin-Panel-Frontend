@@ -22,7 +22,7 @@ export default function FeedUploadForm() {
   
   const categories = categoriesData|| [];
 
-  console.log(categories)
+  
 
   // Upload mutation
   const { mutate, isLoading: uploading } = useMutation({

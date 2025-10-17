@@ -69,7 +69,6 @@ export default function FeedManagement() {
             <option value="">All</option>
             <option value="image">Image</option>
             <option value="video">Video</option>
-            <option value="text">Text</option>
           </select>
         </div>
 

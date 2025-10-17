@@ -43,6 +43,12 @@ export const API_ENDPOINTS = {
   BLOCK_CHILD_ADMIN:"/block/child/admin",
 
 
+  GET_SALES_METRICKS:"/sales/dashboard/analytics",
+  GET_RECENT_SUBSCRIBER_USERS:'/get/recent/subscribers',
+  GET_REFERALL_TOPERS:"/top/referral/users",
+  GET_SALES_CHART_COUNT:"/dashboard/user-subscription-counts",
+
+
   ADMIN_GET_ALL_CREATOR:"/admin/getall/creators",
   ADMIN_GET_TRENDING_CREATOR:"/admin/get/trending/creator",
 

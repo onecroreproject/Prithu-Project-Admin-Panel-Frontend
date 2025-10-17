@@ -1,4 +1,3 @@
-// IndividualUserProfilePage.jsx
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -30,7 +29,7 @@ export default function IndividualUserProfilePage() {
     queryFn: () => fetchUserById(id),
     enabled: !!id,
   });
-
+console.log(user)
   const [activeTab, setActiveTab] = useState("Profile");
 
   if (isLoading)
@@ -54,39 +53,32 @@ export default function IndividualUserProfilePage() {
   return (
     <motion.div
       {...pageMotion}
-      className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-indigo-50 overflow-x-hidden"
+      className="min-h-screen flex bg-gradient-to-br from-blue-50 to-indigo-50 overflow-x-hidden p-4 lg:p-6"
     >
-      {/* Profile Header */}
-      <ProfileHeader user={user} />
+      {/* ===== Left Side: Header + Personal Info ===== */}
+      <motion.div
+        initial={{ x: -20, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.4 }}
+        className="w-full lg:w-1/3 flex flex-col gap-4"
+      >
+        {/* Profile Header */}
+        <ProfileHeader user={user} />
 
-      {/* Main Content */}
+        {/* Personal Info Card */}
+        <PersonalInfoCard user={user} />
+      </motion.div>
+
+      {/* ===== Right Side: Content Cards / Tabs ===== */}
       <motion.div
         {...contentMotion}
-        className="max-w-9xl  w-full px-1 sm:px-1 lg:px-1 py-6 flex flex-col lg:flex-row gap-3"
+        className="w-full lg:w-2/3 pl-0 lg:pl-6 mt-4 lg:mt-0"
       >
-        {/* Personal Info Card */}
-        <motion.div
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.4 }}
-          className="w-full lg:w-1/4"
-        >
-          <PersonalInfoCard user={user} />
-        </motion.div>
-
-        {/* Tabs / Overview */}
-        <motion.div
-          initial={{ x: 20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.4 }}
-          className="w-full lg:w-3/4"
-        >
-          <UserOverviewTabs
-            user={user}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-        </motion.div>
+        <UserOverviewTabs
+          user={user}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
       </motion.div>
     </motion.div>
   );

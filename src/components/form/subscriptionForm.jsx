@@ -11,11 +11,7 @@ const SubscriptionForm = () => {
     price: "",
     durationDays: "",
     description: "",
-    planType: "basic",
-    downloadLimit: "",
-    adFree: false,
     deviceLimit: "",
-    isActive: true,
   });
 
   const { mutate, isLoading } = useMutation({
@@ -27,11 +23,7 @@ const SubscriptionForm = () => {
         price: "",
         durationDays: "",
         description: "",
-        planType: "basic",
-        downloadLimit: "",
-        adFree: false,
         deviceLimit: "",
-        isActive: true,
       });
       queryClient.invalidateQueries(["plans"]);
     },
@@ -41,10 +33,10 @@ const SubscriptionForm = () => {
   });
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
   };
 
@@ -92,30 +84,12 @@ const SubscriptionForm = () => {
         />
         <input
           type="number"
-          name="downloadLimit"
-          placeholder="Download Limit"
-          value={formData.downloadLimit}
-          onChange={handleChange}
-          className="rounded-lg border border-indigo-300 focus:ring-2 focus:ring-indigo-400 px-4 py-3 transition placeholder:text-indigo-400"
-        />
-        <input
-          type="number"
           name="deviceLimit"
           placeholder="Device Limit"
           value={formData.deviceLimit}
           onChange={handleChange}
           className="rounded-lg border border-indigo-300 focus:ring-2 focus:ring-indigo-400 px-4 py-3 transition placeholder:text-indigo-400"
         />
-        <select
-          name="planType"
-          value={formData.planType}
-          onChange={handleChange}
-          className="rounded-lg border border-indigo-300 focus:ring-2 focus:ring-indigo-400 px-4 py-3 transition"
-        >
-          <option value="trial">Trial</option>
-          <option value="basic">Basic</option>
-          <option value="premium">Premium</option>
-        </select>
       </div>
 
       <textarea
@@ -125,29 +99,6 @@ const SubscriptionForm = () => {
         onChange={handleChange}
         className="w-full rounded-lg border border-indigo-300 focus:ring-2 focus:ring-indigo-400 px-4 py-3 transition resize-none min-h-[100px] placeholder:text-indigo-400"
       />
-
-      <div className="flex flex-wrap gap-6">
-        <label className="flex items-center gap-2 text-indigo-700">
-          <input
-            type="checkbox"
-            name="adFree"
-            checked={formData.adFree}
-            onChange={handleChange}
-            className="h-5 w-5 rounded border-indigo-400 text-indigo-600 focus:ring-2 focus:ring-indigo-400"
-          />
-          Ad-Free
-        </label>
-        <label className="flex items-center gap-2 text-indigo-700">
-          <input
-            type="checkbox"
-            name="isActive"
-            checked={formData.isActive}
-            onChange={handleChange}
-            className="h-5 w-5 rounded border-indigo-400 text-indigo-600 focus:ring-2 focus:ring-indigo-400"
-          />
-          Active
-        </label>
-      </div>
 
       <button
         type="submit"

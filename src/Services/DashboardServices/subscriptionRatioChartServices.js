@@ -5,6 +5,6 @@ import { API_ENDPOINTS } from "../../API-Constanse/apiConstance.js";
 
 export async function fetchSubscriptionStats() {
   const res = await Api.get(API_ENDPOINTS.DASHBOARD_SUBSCRIPTION_RATIO_CHART);
-  console.log(res.data)
+
   return res.data;
 }

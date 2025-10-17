@@ -17,10 +17,11 @@ export default function UploadPage() {
   };
 
   const tabs = [
+       { id: "categoryUpload", label: "Category Upload", icon: <Layers className="h-4 w-4 mr-2" /> },
+           { id: "categoryManagement", label: "Category Management", icon: <Folder className="h-4 w-4 mr-2" /> },
     { id: "feedUpload", label: "Feed Upload", icon: <PlusCircle className="h-4 w-4 mr-2" /> },
     { id: "feedManagement", label: "Feed Management", icon: <Eye className="h-4 w-4 mr-2" /> },
-    { id: "categoryUpload", label: "Category Upload", icon: <Layers className="h-4 w-4 mr-2" /> },
-    { id: "categoryManagement", label: "Category Management", icon: <Folder className="h-4 w-4 mr-2" /> },
+
   ];
 
   return (

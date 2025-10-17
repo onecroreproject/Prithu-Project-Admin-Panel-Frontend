@@ -1,17 +1,15 @@
 import { useState } from "react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { Link, useNavigate } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom";
 import { useAdminAuth } from "../../context/adminAuthContext";
-import AdminProfileEditModal from "../../components/form/profileEditForm"; 
 import { useAdminProfile } from "../../context/adminProfileContext";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isEditOpen, setIsEditOpen] = useState(false); // modal state
   const { logout, admin } = useAdminAuth();
   const navigate = useNavigate();
-  const { profile}=useAdminProfile();
+  const { profile } = useAdminProfile();
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -32,23 +30,23 @@ export default function UserDropdown() {
   }
 
   return (
-    <div className="relative ">
+    <div className="relative">
       {/* Avatar + Dropdown toggle */}
       <button
         onClick={toggleDropdown}
         className="flex items-center text-gray-700 dropdown-toggle dark:text-gray-400"
       >
-  <span className="mr-3 overflow-hidden rounded-full h-11 w-11 bg-gray-300 flex items-center justify-center">
-  {admin?.userName ? (
-    <img
-      className="object-cover w-full h-full"
-      src={profile?.profileAvatar}
-      alt={admin.userName}
-    />
-  ) : (
-    "?"
-  )}
-</span>
+        <span className="mr-3 overflow-hidden rounded-full h-11 w-11 bg-gray-300 flex items-center justify-center">
+          {admin?.userName ? (
+            <img
+              className="object-cover w-full h-full"
+              src={profile?.profileAvatar}
+              alt={admin.userName}
+            />
+          ) : (
+            "?"
+          )}
+        </span>
 
         <span className="block mr-1 font-medium text-theme-sm">
           {profile?.userName || "Not Available"}
@@ -87,12 +85,12 @@ export default function UserDropdown() {
         </div>
 
         <ul className="flex flex-col gap-1 pt-4 pb-3 border-b border-gray-200 dark:border-gray-800">
-          {/* ✅ Edit Profile triggers modal */}
+          {/* ✅ Edit Profile → Navigate to /profile */}
           <li>
             <DropdownItem
               onItemClick={() => {
                 closeDropdown();
-                setIsEditOpen(true); // open modal
+                navigate("/admin/profile/page");
               }}
               className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/5"
             >
@@ -119,12 +117,6 @@ export default function UserDropdown() {
           Sign out
         </button>
       </Dropdown>
-
-      {/* ✅ Modal */}
-      <AdminProfileEditModal
-        isOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-      />
     </div>
   );
 }
